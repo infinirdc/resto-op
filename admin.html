@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Resto-Opulence</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Écran de Connexion -->
+    <div id="login-screen" class="min-h-screen flex justify-center items-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+            <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Admin</h1>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="login-email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="login-email" required class="input w-full mt-1" autocomplete="username">
+                </div>
+                <div class="mb-6">
+                    <label for="login-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                    <input type="password" id="login-password" required class="input w-full mt-1" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Se connecter</button>
+                <p id="login-error" class="text-red-500 text-sm mt-3 text-center"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tableau de Bord Admin -->
+    <div id="admin-dashboard" class="hidden">
+        <!-- En-tête -->
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Tableau de Bord</h1>
+            <div class="flex items-center">
+                <span id="user-email" class="text-sm text-gray-600 mr-4"></span>
+                <button id="logout-button" class="btn btn-secondary">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation par Onglets -->
+        <nav class="bg-gray-800 text-white">
+            <div class="max-w-4xl mx-auto px-4">
+                <div class="flex justify-start space-x-1">
+                    <button class="tab-link tab-active" data-tab="tab-stock">Gestion du Stock</button>
+                    <button class="tab-link" data-tab="tab-menu">Gestion du Menu</button>
+                    <button class="tab-link" data-tab="tab-orders">Commandes Actives</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Contenu des Onglets -->
+        <main class="max-w-4xl mx-auto p-6">
+            <!-- Onglet Stock -->
+            <div id="tab-stock" class="tab-content active">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Gestion du Stock</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Formulaire d'ajout -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-lg mb-4">Ajouter un ingrédient</h3>
+                        <form id="stock-form" class="space-y-4">
+                            <div>
+                                <label for="stock-name" class="label">Nom</label>
+                                <input type="text" id="stock-name" required class="input w-full">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="stock-level" class="label">Stock</label>
+                                    <input type="number" id="stock-level" step="any" required class="input w-full">
+                                </div>
+                                <div>
+                                    <label for="stock-unit" class="label">Unité</label>
+                                    <input type="text" id="stock-unit" required class="input w-full" placeholder="ex: kg, l, pièces">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-full">Ajouter au stock</button>
+                        </form>
+                    </div>
+                    <!-- Liste du stock -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-lg mb-4">Inventaire</h3>
+                        <div class="h-96 overflow-y-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="th">Nom</th>
+                                        <th scope="col" class="th">Stock</th>
+                                        <th scope="col" class="th">Unité</th>
+                                        <th scope="col" class="relative px-6 py-3">
+                                            <span class="sr-only">Supprimer</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stock-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Lignes du stock -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Menu -->
+            <div id="tab-menu" class="tab-content">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Gestion du Menu</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Formulaire d'ajout de plat -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-lg mb-4">Ajouter/Modifier un Plat</h3>
+                        <form id="menu-form" class="space-y-4">
+                            <input type="hidden" id="menu-item-id">
+                            <div>
+                                <label for="menu-name" class="label">Nom du Plat</label>
+                                <input type="text" id="menu-name" required class="input w-full">
+                            </div>
+                            <div>
+                                <label for="menu-price" class="label">Prix (€)</label>
+                                <input type="number" id="menu-price" step="0.01" required class="input w-full">
+                            </div>
+                            <!-- Constructeur de recette -->
+                            <div class="space-y-2">
+                                <label class="label">Recette</label>
+                                <div class="flex items-center gap-2">
+                                    <select id="recipe-ingredient" class="input flex-grow"></select>
+                                    <input type="number" id="recipe-qty" placeholder="Qté" class="input w-24">
+                                    <button type="button" id="add-to-recipe-btn" class="btn btn-secondary">
+                                        <i data-lucide="plus" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <ul id="current-recipe-list" class="space-y-2 mt-2 bg-gray-50 p-3 rounded-md h-32 overflow-y-auto"></ul>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="submit" class="btn btn-primary w-full">Enregistrer</button>
+                                <button type="button" id="clear-menu-form-btn" class="btn btn-secondary w-full">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Liste des plats -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-lg mb-4">Plats Actuels</h3>
+                        <div class="h-96 overflow-y-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="th">Nom</th>
+                                        <th scope="col" class="th">Prix</th>
+                                        <th scope="col" class="th">Recette</th>
+                                        <th scope="col" class="relative px-6 py-3">
+                                            <span class="sr-only">Actions</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="menu-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Lignes du menu -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Commandes -->
+            <div id="tab-orders" class="tab-content">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Commandes en cours</h2>
+                <div id="orders-list" class="space-y-4">
+                    <!-- Les commandes seront affichées ici -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
